@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>بازی قهوه‌گیر</title>
+<style>
+  body { background: #f8f1e5; text-align: center; font-family: sans-serif; }
+  canvas { background: #d4b483; display: block; margin: 20px auto; border-radius: 10px; }
+</style>
+</head>
+<body>
+<h2>☕ قهوه بگیر!</h2>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = { x: 200, y: 350, size: 20 };
+let coffee = { x: Math.random() * 380, y: 0, size: 20 };
+let score = 0;
+
+document.addEventListener("keydown", e => {
+    if(e.key === "ArrowLeft" && player.x > 0) player.x -= 20;
+    if(e.key === "ArrowRight" && player.x < canvas.width - player.size) player.x += 20;
+});
+
+function drawPlayer() {
+    ctx.fillStyle = "#6f4e37";
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+}
+
+function drawCoffee() {
+    ctx.fillStyle = "#c69c6d";
+    ctx.beginPath();
+    ctx.arc(coffee.x, coffee.y, coffee.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    drawCoffee();
+
+    coffee.y += 5;
+    if (coffee.y > canvas.height) {
+        coffee.x = Math.random() * 380;
+        coffee.y = 0;
+    }
+
+    if (coffee.y + coffee.size > player.y &&
+        coffee.x > player.x && coffee.x < player.x + player.size) {
+        score++;
+        coffee.x = Math.random() * 380;
+        coffee.y = 0;
+    }
+
+    ctx.fillStyle = "#000";
+    ctx.fillText("امتیاز: " + score, 10, 20);
+
+    requestAnimationFrame(update);
+}
+update();
+</script>
+</body>
+</html>
